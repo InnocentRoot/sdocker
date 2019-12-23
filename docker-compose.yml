@@ -1,51 +1,42 @@
-version: '3'
+version: '3.7'
 services:
 
-  #PHP Service
-  app:
+  # MariaDB service
+  MariaDB:
+    container_name: "MariaDB"
+    image: mariadb:latest
+    volumes:
+        - "./dockerData/mariadb:/var/lib/mysql"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      SERVICE_NAME: mariadb
+      SERVICE_TAG: dev
+    ports:
+      - 3366:3306
+    networks:
+      - MariaDB
+
+  # PHP Service
+  php:
     build:
-      context: Images/symfony
-      dockerfile: Dockerfile
-    image: digitalocean.com/php
-    container_name: app
-    restart: unless-stopped
-    tty: true
-    environment:
-      SERVICE_NAME: app
-      SERVICE_TAGS: dev
-    working_dir: /var/www
-    networks:
-      - app-network
-
-  #Nginx Service
-  webserver:
-    image: nginx:alpine
-    container_name: webserver
-    restart: unless-stopped
-    tty: true
+      context: ./dockerImages/php
     ports:
-      - "80:80"
-      - "443:443"
+    - 8080:80
+    - 1443:443
+    - 9001:9001
+    volumes:
+      - ./:/var/www/sdocker
+      - ./dockerData/logs/symfony:/var/www/sdocker/app/logs
+    depends_on:
+      - MariaDB
     networks:
-      - app-network
-
-  #MySQL Service
-  db:
-    image: mysql:5.7.22
-    container_name: db
-    restart: unless-stopped
-    tty: true
-    ports:
-      - "3306:3306"
-    environment:
-      MYSQL_DATABASE: laravel
-      MYSQL_ROOT_PASSWORD: your_mysql_root_password
-      SERVICE_TAGS: dev
-      SERVICE_NAME: mysql
-    networks:
-      - app-network
+      - MariaDB
+      - php
 
 #Docker Networks
 networks:
-  app-network:
-    driver: bridge
+  MariaDB:
+  php:

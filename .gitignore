@@ -17,3 +17,7 @@
 ###> Editor folder ###
 /.idea/
 ###< Editor folder ###
+
+###> Docker data ###
+/dockerData/
+###< Editor folder ###
