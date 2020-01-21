@@ -29,12 +29,24 @@ services:
     - 9001:9001
     volumes:
       - ./:/var/www/sdocker
-      - ./dockerData/logs/symfony:/var/www/sdocker/app/logs
+      - ./dockerData/logs/symfony:/var/www/sdocker/var/log
+      - ./dockerData/logs/nginx:/var/log/nginx
     depends_on:
       - MariaDB
     networks:
       - MariaDB
       - php
+  elk:
+    build:
+      context: ./dockerImages/elk
+    ports:
+      - 8181:80
+    volumes:
+      - ./dockerImages/elk/logstash/:/etc/logstash
+      - ./dockerImages/elk/logstash/patterns:/etc/logstash/patterns
+   # volumes_from:
+    #  - php
+     # - MariaDB
 
 #Docker Networks
 networks:

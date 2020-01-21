@@ -54,6 +54,9 @@ RUN ln -s /etc/nginx/sites-available/sdocker.conf /etc/nginx/sites-enabled/
 
 RUN mkdir /run/php
 
+COPY permission.sh /usr/local/bin/
+
+ENTRYPOINT ["/usr/local/bin/permission.sh"]
 EXPOSE 9001
 WORKDIR /var/www/sdocker
 

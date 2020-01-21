@@ -20,4 +20,5 @@
 
 ###> Docker data ###
 /dockerData/
-###< Editor folder ###
+.env
+###< Docker data ###
